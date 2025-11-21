@@ -1,0 +1,9 @@
+# Ignore all NCES data files (can be large)
+*.csv
+*.txt
+*.xlsx
+*.xls
+
+# Keep the .gitignore and README
+!.gitignore
+!README.md

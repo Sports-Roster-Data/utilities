@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hs_standardization"
-version = "1.0.0"
-description = "A utility for normalizing and standardizing high school names across datasets"
+version = "1.1.0"
+description = "A utility for normalizing and standardizing high school names across datasets with NCES integration"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "MIT"}

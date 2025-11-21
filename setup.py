@@ -11,9 +11,9 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="hs_standardization",
-    version="1.0.0",
+    version="1.1.0",
     author="Sports Roster Data",
-    description="A utility for normalizing and standardizing high school names across datasets",
+    description="A utility for normalizing and standardizing high school names across datasets with NCES integration",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Sports-Roster-Data/utilities",

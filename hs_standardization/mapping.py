@@ -48,15 +48,15 @@ def select_canonical_name(group_df):
     if len(top_candidates) == 1:
         return top_candidates.iloc[0]
 
-    # Prefer "High School" suffix
+    # Prefer "H.S." suffix to avoid confusion with colleges
     def score_name(name):
         score = 0
-        if 'High School' in str(name):
+        if 'H.S.' in str(name):
             score += 100
-        elif ' HS' in str(name) and 'H.S.' not in str(name):
-            score += 50
-        # Deduct points for periods
-        score -= str(name).count('.') * 10
+        elif 'High School' in str(name):
+            score += 90
+        elif ' HS' in str(name):
+            score += 80
         return score
 
     top_candidates['name_score'] = top_candidates['high_school_original'].apply(score_name)
