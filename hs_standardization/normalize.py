@@ -210,24 +210,27 @@ def is_international_school(name, country=None):
     return categorize_school_type(name) == 'international'
 
 
-def standardize_suffix(name, preferred_suffix="High School"):
+def standardize_suffix(name, preferred_suffix="H.S."):
     """
     Standardize the high school suffix to a preferred format.
 
     This is useful for creating consistent display names after matching.
+    By default, uses "H.S." to avoid confusion with similarly-named colleges.
 
     Args:
         name (str): Original high school name
-        preferred_suffix (str): Desired suffix (default: "High School")
+        preferred_suffix (str): Desired suffix (default: "H.S.")
 
     Returns:
         str: Name with standardized suffix
 
     Examples:
         >>> standardize_suffix("Central HS")
-        'Central High School'
-        >>> standardize_suffix("Lincoln H.S.", preferred_suffix="HS")
-        'Lincoln HS'
+        'Central H.S.'
+        >>> standardize_suffix("Lincoln High School")
+        'Lincoln H.S.'
+        >>> standardize_suffix("Lincoln H.S.", preferred_suffix="High School")
+        'Lincoln High School'
     """
     if pd.isna(name) or name == '':
         return name

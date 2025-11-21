@@ -8,6 +8,7 @@ This package provides functions for:
 - Categorizing school types (public, private, prep, international)
 - Building standardization mappings
 - Applying mappings to datasets
+- Integrating with NCES (National Center for Education Statistics) data
 
 Originally extracted from the Sports-Roster-Data/womens-college-basketball project.
 
@@ -28,9 +29,15 @@ Example usage:
     ... })
     >>> schools['high_school_normalized'] = schools['high_school_original'].apply(normalize_hs_name)
     >>> mapping = build_complete_mapping(schools)
+    >>>
+    >>> # Match schools to NCES database
+    >>> from hs_standardization import print_download_instructions, batch_match_to_nces
+    >>> print_download_instructions()  # Get NCES data download instructions
+    >>> # After downloading NCES data files...
+    >>> matched = batch_match_to_nces(schools, name_col='high_school_original')
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __author__ = "Sports Roster Data"
 __license__ = "MIT"
 
@@ -52,6 +59,19 @@ from .mapping import (
     build_complete_mapping
 )
 
+from .nces_data import (
+    print_download_instructions,
+    download_instructions_ccd,
+    download_instructions_pss,
+    load_ccd_data,
+    load_pss_data,
+    load_and_prepare_all_nces,
+    match_to_nces,
+    batch_match_to_nces,
+    get_nces_standardized_name,
+    create_nces_lookup
+)
+
 __all__ = [
     # Normalization functions
     'normalize_hs_name',
@@ -67,4 +87,16 @@ __all__ = [
     'create_prep_school_mapping',
     'apply_mapping',
     'build_complete_mapping',
+
+    # NCES integration functions
+    'print_download_instructions',
+    'download_instructions_ccd',
+    'download_instructions_pss',
+    'load_ccd_data',
+    'load_pss_data',
+    'load_and_prepare_all_nces',
+    'match_to_nces',
+    'batch_match_to_nces',
+    'get_nces_standardized_name',
+    'create_nces_lookup',
 ]
