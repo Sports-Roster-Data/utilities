@@ -11,9 +11,9 @@ long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
     name="sports-roster-data-utilities",
-    version="1.2.0",
+    version="1.3.0",
     author="Sports Roster Data",
-    description="Common utilities for sports roster data processing, including high school name standardization and height conversion",
+    description="Common utilities for sports roster data processing, including high school name standardization, height conversion, and location parsing",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Sports-Roster-Data/utilities",
@@ -35,6 +35,7 @@ setup(
     python_requires=">=3.7",
     install_requires=[
         "pandas>=1.0.0",
+        "pycountry>=22.3.5",
     ],
     extras_require={
         "dev": [
@@ -44,7 +45,7 @@ setup(
             "flake8",
         ],
     },
-    keywords="sports, high school, standardization, normalization, data cleaning, education, height, conversion",
+    keywords="sports, high school, standardization, normalization, data cleaning, education, height, conversion, location parsing, country names",
     project_urls={
         "Bug Reports": "https://github.com/Sports-Roster-Data/utilities/issues",
         "Source": "https://github.com/Sports-Roster-Data/utilities",
