@@ -3,8 +3,113 @@
 Common utilities for sports roster data processing and standardization.
 
 ## Table of Contents
+- [Web Scraper Utility](#web-scraper-utility)
 - [Height Conversion Utility](#height-conversion-utility)
 - [High School Standardization Utility](#high-school-standardization-utility)
+
+## Web Scraper Utility
+
+A utility for extracting article text from web URLs using the newspaper4k library.
+
+### Features
+
+- **Article Text Extraction**: Automatically extract main article text from web pages
+- **Metadata Support**: Optionally extract article metadata (title, authors, publish date, top image)
+- **Simple API**: Easy-to-use functions for both detailed and simple text extraction
+- **Command-line Interface**: Run as a standalone script for quick article extraction
+- **Error Handling**: Robust error handling with informative error messages
+
+### Quick Start
+
+```python
+from web_scraper import extract_article_text, extract_article_text_simple
+
+# Simple text extraction
+text = extract_article_text_simple('https://example.com/article')
+if text:
+    print(text)
+
+# Extract with metadata
+result = extract_article_text('https://example.com/article', include_metadata=True)
+print(f"Title: {result['title']}")
+print(f"Authors: {', '.join(result['authors'])}")
+print(f"Text: {result['text']}")
+```
+
+### Usage Examples
+
+#### Example 1: Basic Article Extraction
+
+```python
+from web_scraper import extract_article_text_simple
+
+url = "https://example.com/sports-news/player-signs-contract"
+article_text = extract_article_text_simple(url)
+
+if article_text:
+    print(article_text)
+else:
+    print("Failed to extract article text")
+```
+
+#### Example 2: Extract with Full Metadata
+
+```python
+from web_scraper import extract_article_text
+
+url = "https://example.com/sports-news/player-signs-contract"
+result = extract_article_text(url, include_metadata=True)
+
+if result['error']:
+    print(f"Error: {result['error']}")
+else:
+    print(f"Title: {result['title']}")
+    print(f"Authors: {', '.join(result['authors']) if result['authors'] else 'N/A'}")
+    print(f"Published: {result['publish_date']}")
+    print(f"Top Image: {result['top_image']}")
+    print(f"\nArticle Text:\n{result['text']}")
+```
+
+#### Example 3: Command-line Usage
+
+```bash
+# Using uv to run the script
+uv run python -m web_scraper.scraper https://example.com/article
+
+# With metadata
+uv run python -m web_scraper.scraper https://example.com/article --metadata
+```
+
+### API Reference
+
+#### `extract_article_text(url, download_timeout=10, include_metadata=False)`
+
+Extract text content from a web article URL.
+
+**Parameters:**
+- `url` (str): The URL of the article to scrape
+- `download_timeout` (int): Timeout in seconds for downloading the article (default: 10)
+- `include_metadata` (bool): If True, include additional metadata (default: False)
+
+**Returns:**
+- Dictionary containing:
+  - `text`: The extracted article text
+  - `url`: The original URL
+  - `error`: Error message if extraction failed
+  - `title`: Article title (if include_metadata=True)
+  - `authors`: List of authors (if include_metadata=True)
+  - `publish_date`: Publication date (if include_metadata=True)
+  - `top_image`: URL of the top image (if include_metadata=True)
+
+#### `extract_article_text_simple(url)`
+
+Simple wrapper to extract just the text content from a URL.
+
+**Parameters:**
+- `url` (str): The URL of the article to scrape
+
+**Returns:**
+- str or None: The extracted article text, or None if extraction failed
 
 ## Height Conversion Utility
 
