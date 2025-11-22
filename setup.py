@@ -1,5 +1,5 @@
 """
-Setup configuration for hs_standardization package
+Setup configuration for sports-roster-data-utilities package
 """
 
 from setuptools import setup, find_packages
@@ -10,14 +10,14 @@ this_directory = Path(__file__).parent
 long_description = (this_directory / "README.md").read_text(encoding="utf-8")
 
 setup(
-    name="hs_standardization",
-    version="1.1.0",
+    name="sports-roster-data-utilities",
+    version="1.2.0",
     author="Sports Roster Data",
-    description="A utility for normalizing and standardizing high school names across datasets with NCES integration",
+    description="Common utilities for sports roster data processing, including high school name standardization and height conversion",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/Sports-Roster-Data/utilities",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests", "tests.*"]),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
@@ -44,7 +44,7 @@ setup(
             "flake8",
         ],
     },
-    keywords="high school, standardization, normalization, data cleaning, education",
+    keywords="sports, high school, standardization, normalization, data cleaning, education, height, conversion",
     project_urls={
         "Bug Reports": "https://github.com/Sports-Roster-Data/utilities/issues",
         "Source": "https://github.com/Sports-Roster-Data/utilities",

@@ -2,6 +2,128 @@
 
 Common utilities for sports roster data processing and standardization.
 
+## Table of Contents
+- [Height Conversion Utility](#height-conversion-utility)
+- [High School Standardization Utility](#high-school-standardization-utility)
+
+## Height Conversion Utility
+
+A utility for converting various height formats commonly found in sports roster data to a standardized format (total inches).
+
+### Features
+
+- **Multiple Format Support**: Parse heights in various formats:
+  - Hyphen format: "5-10", "6-2"
+  - Feet/inches with quotes: "6'2\"", "5'11"
+  - Feet/inches with text: "6 ft 2 in", "5 feet 11 inches"
+  - Plain numbers (assumes inches): 72, "71"
+- **Flexible Output**: Convert inches back to formatted strings in multiple formats
+- **Robust Parsing**: Handles whitespace, case-insensitivity, and various punctuation
+- **Type Flexibility**: Accepts strings, integers, and floats as input
+
+### Quick Start
+
+```python
+from height_utils import height_to_inches, inches_to_height_str
+
+# Convert various formats to inches
+height_to_inches("5-10")        # Returns: 70
+height_to_inches("6'2\"")       # Returns: 74
+height_to_inches("5 ft 11 in")  # Returns: 71
+height_to_inches(72)            # Returns: 72
+
+# Convert inches to formatted strings
+inches_to_height_str(70)                    # Returns: "5-10"
+inches_to_height_str(74, format="quote")    # Returns: "6'2\""
+inches_to_height_str(71, format="text")     # Returns: "5 ft 11 in"
+```
+
+### Usage Examples
+
+#### Example 1: Converting Roster Data
+
+```python
+import pandas as pd
+from height_utils import height_to_inches
+
+# Your roster data with various height formats
+roster = pd.DataFrame({
+    'player': ['Alice', 'Bob', 'Charlie', 'Diana'],
+    'height': ['5-10', '6\'2"', '5 ft 11 in', '72']
+})
+
+# Convert all heights to inches for analysis
+roster['height_inches'] = roster['height'].apply(height_to_inches)
+
+print(roster)
+# Output:
+#    player        height  height_inches
+# 0   Alice          5-10             70
+# 1     Bob          6'2"             74
+# 2 Charlie  5 ft 11 in             71
+# 3   Diana            72             72
+```
+
+#### Example 2: Standardizing Height Format
+
+```python
+from height_utils import height_to_inches, inches_to_height_str
+
+# Mixed height formats
+heights = ["5-10", "6'2\"", "5 ft 11 in", 72, "6-0"]
+
+# Standardize all to hyphen format
+standardized = [inches_to_height_str(height_to_inches(h)) for h in heights]
+
+print(standardized)
+# Output: ['5-10', '6-2', '5-11', '6-0', '6-0']
+```
+
+### Supported Height Formats
+
+The `height_to_inches()` function supports the following input formats:
+
+| Format | Example | Description |
+|--------|---------|-------------|
+| Hyphen | "5-10", "6-2" | Feet and inches separated by hyphen |
+| Quotes | "6'2\"", "5'11" | Feet marked with single quote, inches with double quote (optional) |
+| Text (full) | "6 ft 2 in", "5 feet 11 inches" | Spelled out with 'ft'/'feet' and 'in'/'inches' |
+| Feet only (quote) | "6'", "5'" | Just feet with quote mark |
+| Feet only (text) | "6 ft", "5 feet" | Just feet with text |
+| Inches only (text) | "72 in", "71 inches" | Total inches with text |
+| Plain number | 72, 71.5, "70" | Assumes total inches |
+
+### API Reference
+
+#### `height_to_inches(height)`
+
+Convert height value to total inches.
+
+- **Parameters**:
+  - `height` (str, int, or float): Height value in any supported format
+- **Returns**: `int` - Total height in inches, or `None` if format is invalid
+- **Examples**:
+  ```python
+  height_to_inches("5-10")  # 70
+  height_to_inches("6'2\"")  # 74
+  height_to_inches(72)       # 72
+  ```
+
+#### `inches_to_height_str(inches, format="hyphen")`
+
+Convert total inches to formatted height string.
+
+- **Parameters**:
+  - `inches` (int or float): Total height in inches
+  - `format` (str): Output format - "hyphen" (default), "quote", or "text"
+- **Returns**: `str` - Formatted height string, or `None` if inches is invalid
+- **Examples**:
+  ```python
+  inches_to_height_str(70)                    # "5-10"
+  inches_to_height_str(74, format="quote")    # "6'2\""
+  inches_to_height_str(71, format="text")     # "5 ft 11 in"
+  ```
+
 ## High School Standardization Utility
 
 A reusable Python package for normalizing and standardizing high school names across datasets. This utility helps clean and standardize high school names that may appear in different formats (e.g., "Central HS", "Central High School", "Central H.S.") into a single canonical form.
