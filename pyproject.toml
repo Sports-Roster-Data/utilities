@@ -3,16 +3,16 @@ requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hs_standardization"
-version = "1.1.0"
-description = "A utility for normalizing and standardizing high school names across datasets with NCES integration"
+name = "sports-roster-utilities"
+version = "1.2.0"
+description = "A collection of utilities for sports roster data processing including high school name standardization, height conversion, and web scraping"
 readme = "README.md"
 requires-python = ">=3.7"
 license = {text = "MIT"}
 authors = [
     {name = "Sports Roster Data"}
 ]
-keywords = ["high school", "standardization", "normalization", "data cleaning", "education"]
+keywords = ["high school", "standardization", "normalization", "data cleaning", "education", "web scraping", "sports", "utilities"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -29,6 +29,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "newspaper4k>=0.9.2",
     "pandas>=1.0.0",
 ]
 
