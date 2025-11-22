@@ -3,9 +3,221 @@
 Common utilities for sports roster data processing and standardization.
 
 ## Table of Contents
+- [Location Parser Utility](#location-parser-utility)
 - [Web Scraper Utility](#web-scraper-utility)
 - [Height Conversion Utility](#height-conversion-utility)
 - [High School Standardization Utility](#high-school-standardization-utility)
+
+## Location Parser Utility
+
+A utility for parsing and standardizing city and country names from location strings, particularly useful for processing international roster data.
+
+### Features
+
+- **City/Country Extraction**: Parse location strings in "City, Country" format
+- **Country Standardization**: Standardize country names to ISO 3166-1 official names
+- **ISO Code Support**: Get ISO alpha-2, alpha-3, and numeric country codes
+- **Special Region Handling**: Correctly maps England, Scotland, Wales → United Kingdom
+- **Fuzzy Matching**: Handles misspelled country names using pycountry's fuzzy matching
+- **Robust Parsing**: Handles extra whitespace, special characters, and various formats
+
+### Quick Start
+
+```python
+from location_utils import parse_city_country, standardize_country_name
+
+# Parse city and country from a location string
+result = parse_city_country("London, England")
+print(result['city'])                    # "London"
+print(result['country']['name'])         # "United Kingdom"
+print(result['country']['alpha_2'])      # "GB"
+
+# Standardize a country name
+country = standardize_country_name("England")
+print(country['name'])      # "United Kingdom"
+print(country['alpha_2'])   # "GB"
+print(country['alpha_3'])   # "GBR"
+```
+
+### Usage Examples
+
+#### Example 1: Processing International Roster Data
+
+```python
+import pandas as pd
+from location_utils import parse_city_country
+
+# Your roster data with international players
+roster = pd.DataFrame({
+    'player': ['Emma Johnson', 'Anna Svensson', 'Yuki Tanaka'],
+    'hometown': ['London, England', 'Stockholm, Sweden', 'Tokyo, Japan']
+})
+
+# Parse locations
+def extract_location_info(location):
+    result = parse_city_country(location)
+    if result:
+        return pd.Series({
+            'city': result['city'],
+            'country': result['country']['name'] if result['country'] else None,
+            'country_code': result['country']['alpha_2'] if result['country'] else None
+        })
+    return pd.Series({'city': None, 'country': None, 'country_code': None})
+
+roster[['city', 'country', 'country_code']] = roster['hometown'].apply(extract_location_info)
+
+print(roster)
+# Output:
+#            player              hometown        city         country country_code
+# 0   Emma Johnson      London, England      London  United Kingdom           GB
+# 1  Anna Svensson    Stockholm, Sweden   Stockholm          Sweden           SE
+# 2    Yuki Tanaka         Tokyo, Japan       Tokyo           Japan           JP
+```
+
+#### Example 2: Standardizing Country Names
+
+```python
+from location_utils import standardize_country_name
+
+# Various country name formats
+countries = ["England", "USA", "GB", "United States of America"]
+
+for country_input in countries:
+    result = standardize_country_name(country_input)
+    if result:
+        print(f"{country_input:30} → {result['name']:20} ({result['alpha_2']})")
+    else:
+        print(f"{country_input:30} → Not recognized")
+
+# Output:
+# England                        → United Kingdom      (GB)
+# USA                            → United States       (US)
+# GB                             → United Kingdom      (GB)
+# United States of America       → United States       (US)
+```
+
+#### Example 3: Handling Complex Location Formats
+
+```python
+from location_utils import parse_city_country
+
+# Handle various location formats
+locations = [
+    "Paris, France",
+    "New York, NY, USA",           # City, State, Country
+    "São Paulo, Brazil",           # Special characters
+    "  London  ,  England  ",      # Extra whitespace
+]
+
+for location in locations:
+    result = parse_city_country(location)
+    if result:
+        print(f"City: {result['city']:20} | Country: {result['country']['name']}")
+
+# Output:
+# City: Paris                | Country: France
+# City: New York, NY         | Country: United States
+# City: São Paulo            | Country: Brazil
+# City: London               | Country: United Kingdom
+```
+
+### Supported Country Name Formats
+
+The utility recognizes country names in multiple formats:
+
+| Input Format | Standardized Output | ISO Code |
+|-------------|---------------------|----------|
+| England, Scotland, Wales | United Kingdom | GB |
+| USA, US | United States | US |
+| Holland | Netherlands | NL |
+| Full names | Official ISO name | - |
+| ISO alpha-2 codes | Official ISO name | - |
+| ISO alpha-3 codes | Official ISO name | - |
+| Misspellings | Fuzzy matched name | - |
+
+### API Reference
+
+#### `parse_city_country(location, standardize=True)`
+
+Parse a location string to extract city and country names.
+
+**Parameters:**
+- `location` (str): Location string (e.g., "London, England" or "Stockholm, Sweden")
+- `standardize` (bool): If True, standardize country names to ISO 3166-1 format (default: True)
+
+**Returns:**
+- Dictionary containing:
+  - `city`: City name (e.g., "London")
+  - `country_input`: Original country string as provided (e.g., "England")
+  - `country`: Standardized country information dict (if standardize=True) or original country string (if standardize=False)
+- Returns None if the location string cannot be parsed
+
+**Examples:**
+```python
+parse_city_country("London, England")
+# Returns: {
+#   'city': 'London',
+#   'country_input': 'England',
+#   'country': {
+#     'name': 'United Kingdom',
+#     'alpha_2': 'GB',
+#     'alpha_3': 'GBR',
+#     'numeric': '826'
+#   }
+# }
+
+parse_city_country("Stockholm, Sweden", standardize=False)
+# Returns: {
+#   'city': 'Stockholm',
+#   'country_input': 'Sweden',
+#   'country': 'Sweden'
+# }
+```
+
+#### `standardize_country_name(country)`
+
+Standardize a country name to its official ISO 3166-1 name.
+
+**Parameters:**
+- `country` (str): Country name to standardize (e.g., "England", "Sweden", "USA")
+
+**Returns:**
+- Dictionary containing:
+  - `name`: Official country name (e.g., "United Kingdom")
+  - `alpha_2`: ISO 3166-1 alpha-2 code (e.g., "GB")
+  - `alpha_3`: ISO 3166-1 alpha-3 code (e.g., "GBR")
+  - `numeric`: ISO 3166-1 numeric code (e.g., "826")
+- Returns None if country cannot be identified
+
+**Examples:**
+```python
+standardize_country_name("England")
+# Returns: {
+#   'name': 'United Kingdom',
+#   'alpha_2': 'GB',
+#   'alpha_3': 'GBR',
+#   'numeric': '826'
+# }
+
+standardize_country_name("USA")
+# Returns: {
+#   'name': 'United States',
+#   'alpha_2': 'US',
+#   'alpha_3': 'USA',
+#   'numeric': '840'
+# }
+```
+
+### Dependencies
+
+This utility uses the **pycountry** library for country standardization:
+
+- **pycountry** (>=22.3.5): ISO country, subdivision, language data
+
+The library provides:
+- Complete ISO 3166-1 country database
+- Fuzzy matching for misspelled names
+- No external API dependencies (all data is local)
 
 ## Web Scraper Utility
 
